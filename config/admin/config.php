@@ -12,6 +12,7 @@ return [
     'view_replace_str'  =>  [
         '__PUBLIC__'=>'/uploads',
         '__PUBLICS__'=>'/uploadsb',
+        '__PAGESIZE__'=>10
 
     ],
     'IMG_PATH' => 'http://static.shop.com/',

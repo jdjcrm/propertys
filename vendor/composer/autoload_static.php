@@ -4,15 +4,16 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit547f1ba8138a17d6b867624279d0c7eb
+class ComposerStaticInit0968111cc915bd047d576c6c7f9e96f3
 {
     public static $files = array (
-        '9b552a3cc426e3287cc811caefa3cf53' => __DIR__ . '/..' . '/topthink/think-helper/src/helper.php',
+        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '9b552a3cc426e3287cc811caefa3cf53' => __DIR__ . '/..' . '/topthink/think-helper/src/helper.php',
         '1cfd2761b63b0a29ed23657ea394cb2d' => __DIR__ . '/..' . '/topthink/think-captcha/src/helper.php',
-        '72c97b53391125cae04082a81029f42d' => __DIR__ . '/..' . '/topthink/think-testing/src/config.php',
         'ddc3cd2a04224f9638c5d0de6a69c7e3' => __DIR__ . '/..' . '/topthink/think-migration/src/config.php',
         'cc56288302d9df745d97c934d6a6e5f0' => __DIR__ . '/..' . '/topthink/think-queue/src/common.php',
+        '72c97b53391125cae04082a81029f42d' => __DIR__ . '/..' . '/topthink/think-testing/src/config.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -40,11 +41,13 @@ class ComposerStaticInit547f1ba8138a17d6b867624279d0c7eb
         'S' => 
         array (
             'Symfony\\Polyfill\\Mbstring\\' => 26,
+            'Symfony\\Polyfill\\Ctype\\' => 23,
             'Symfony\\Component\\Yaml\\' => 23,
             'Symfony\\Component\\DomCrawler\\' => 29,
         ),
         'P' => 
         array (
+            'Prophecy\\' => 9,
             'Phinx\\' => 6,
         ),
         'D' => 
@@ -88,8 +91,8 @@ class ComposerStaticInit547f1ba8138a17d6b867624279d0c7eb
         ),
         'think\\' => 
         array (
-            0 => __DIR__ . '/..' . '/topthink/think-image/src',
-            1 => __DIR__ . '/../..' . '/thinkphp/library/think',
+            0 => __DIR__ . '/../..' . '/thinkphp/library/think',
+            1 => __DIR__ . '/..' . '/topthink/think-image/src',
             2 => __DIR__ . '/..' . '/topthink/think-queue/src',
         ),
         'phpDocumentor\\Reflection\\' => 
@@ -110,6 +113,10 @@ class ComposerStaticInit547f1ba8138a17d6b867624279d0c7eb
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
         ),
+        'Symfony\\Polyfill\\Ctype\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
+        ),
         'Symfony\\Component\\Yaml\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/yaml',
@@ -117,6 +124,10 @@ class ComposerStaticInit547f1ba8138a17d6b867624279d0c7eb
         'Symfony\\Component\\DomCrawler\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/dom-crawler',
+        ),
+        'Prophecy\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpspec/prophecy/src/Prophecy',
         ),
         'Phinx\\' => 
         array (
@@ -131,9 +142,9 @@ class ComposerStaticInit547f1ba8138a17d6b867624279d0c7eb
     public static $prefixesPsr0 = array (
         'P' => 
         array (
-            'Prophecy\\' => 
+            'PHPExcel' => 
             array (
-                0 => __DIR__ . '/..' . '/phpspec/prophecy/src',
+                0 => __DIR__ . '/..' . '/phpoffice/phpexcel/Classes',
             ),
         ),
     );
@@ -143,9 +154,12 @@ class ComposerStaticInit547f1ba8138a17d6b867624279d0c7eb
         'File_Iterator_Facade' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Facade.php',
         'File_Iterator_Factory' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Factory.php',
         'PHPUnit\\Framework\\Assert' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/Assert.php',
+        'PHPUnit\\Framework\\AssertionFailedError' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/AssertionFailedError.php',
         'PHPUnit\\Framework\\BaseTestListener' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/BaseTestListener.php',
+        'PHPUnit\\Framework\\Test' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/Test.php',
         'PHPUnit\\Framework\\TestCase' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/TestCase.php',
         'PHPUnit\\Framework\\TestListener' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/TestListener.php',
+        'PHPUnit\\Framework\\TestSuite' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/TestSuite.php',
         'PHPUnit_Exception' => __DIR__ . '/..' . '/phpunit/phpunit/src/Exception.php',
         'PHPUnit_Extensions_GroupTestSuite' => __DIR__ . '/..' . '/phpunit/phpunit/src/Extensions/GroupTestSuite.php',
         'PHPUnit_Extensions_PhptTestCase' => __DIR__ . '/..' . '/phpunit/phpunit/src/Extensions/PhptTestCase.php',
@@ -587,10 +601,10 @@ class ComposerStaticInit547f1ba8138a17d6b867624279d0c7eb
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit547f1ba8138a17d6b867624279d0c7eb::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit547f1ba8138a17d6b867624279d0c7eb::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit547f1ba8138a17d6b867624279d0c7eb::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit547f1ba8138a17d6b867624279d0c7eb::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit0968111cc915bd047d576c6c7f9e96f3::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit0968111cc915bd047d576c6c7f9e96f3::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit0968111cc915bd047d576c6c7f9e96f3::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit0968111cc915bd047d576c6c7f9e96f3::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -2,36 +2,55 @@
 namespace  app\admin\controller;
 use think\Controller;
 use think\Db;
+use app\admin\model\Order;
 
 /**
  * 房屋管理
  */
 class House extends Common
 {
+    private function getAjaxWhere($data)
+    {
+        $where=[];
+        if (isset($data["district_id"])&&$data["district_id"])
+        {
+            $where["h.district_id"]=trim($data["district_id"]);
+        }
+        if (isset($data["owner"])&&$data["owner"])
+        {
+            $where["h.owner"]=trim($data["owner"]);
+        }
+        if (isset($data["complex"])&&$data["complex"])
+        {
+            $where["h.complex"]=trim($data["complex"]);
+        }
+        if (isset($data["building"])&&$data["building"])
+        {
+            $where["h.building"]=trim($data["building"]);
+        }
+        if (isset($data["unit"])&&$data["unit"])
+        {
+            $where["h.unit"]=trim($data["unit"]);
+        }
+        if (isset($data["room"])&&$data["room"])
+        {
+            $where["h.room"]=trim($data["room"]);
+        }
+        if (isset($data["id"])&&$data["id"])
+        {
+            $where["h.id"]=trim($data["id"]);
+        }
+        return $where;
+    }
 	public function index()
 	{
 		if(request()->isAjax())
 		{
             $page=input('get.page')?:1;
             $limit=input('get.limit')?:10;
-            $keyword=input('get.keyword')?:'';
-            $district_id=input('get.district_id')?:'';
-            $key=input('get.key')?:'owner';
-            $where["h.id"]=[">",0];
-            if (!empty($keyword))
-            {
-                $keyword=trim($keyword);
-                if ($key=='owner')
-                {
-                    $keyword=["like","%{$keyword}%"];
-                }
-                $where["h.".$key]=$keyword;
-            }
-            if ($district_id)
-            {
-                $where["district_id"]=$district_id;
-            }
-            $data=Db::table("house")
+            $data=input('get.');
+            $where=$this->getAjaxWhere($data);
+            $house=Db::table("house")
                 ->alias('h')
                 ->field("h.*,d.name as district")
                 ->join('district d','d.id = h.district_id','left')
@@ -39,14 +58,18 @@ class House extends Common
                 ->order('h.id','asc')
                 ->page($page,$limit)
                 ->select();
-            foreach ($data as &$val)
+            foreach ($house as &$val)
             {
+                $property_arrears=Db::table("order")->field("IFNULL(SUM(fee-pay_fee-compensation),0) as property_arrears")->where(["pay_status"=>Order::STATUS_NOT_FINISH,"type"=>Order::PROPERTY_TYPE,"house_id"=>$val["id"]])->find();
+                $val["property_arrears"]=$property_arrears?$property_arrears["property_arrears"]:0;
+                $heating_arrears=Db::table("order")->field("IFNULL(SUM(fee-pay_fee-compensation),0) as heating_arrears")->where(["pay_status"=>Order::STATUS_NOT_FINISH,"type"=>Order::HEATING_TYPE,"house_id"=>$val["id"]])->find();
+                $val["heating_arrears"]=$heating_arrears?$heating_arrears["heating_arrears"]:0;
                 $val["ctime"]=date("Y-m-d H:i:s",$val["ctime"]);
                 $val["check_in_at"]=date("Y-m-d",$val["check_in_at"]);
             }
             unset($val);
             $count=Db::table("house")->alias('h')->where($where)->count();
-            $this->layui_success($data,$count);
+            $this->layui_success($house,$count);
 		}
         $district=Db::table("district")->field("id,name")->order('id','asc')->select();
         $this->assign('districts',$district);

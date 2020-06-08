@@ -4,26 +4,54 @@
         <a><cite> 房屋列表</cite></a>
     </span>
 </div>
-<div class="search-table layui-form">
-    <div class="layui-inline">
-        <select name="type"  id="search-district" lay-search="">
-            <option value=""></option>
-            {volist name="districts" id='district'}
-            <option value="{$district.id}">{$district.name}</option>
-            {/volist}
-        </select>
+<div class="layui-form layui-card-header layuiadmin-card-header-auto" style="height: auto">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">ID</label>
+            <div class="layui-input-block">
+                <input type="text" name="id"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">业主</label>
+            <div class="layui-input-block">
+                <input type="text" name="owner"  placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">房屋信息</label>
+            <div class="layui-input-inline" style="width: 100px;">
+                <select name="district_id" lay-search="">
+                    <option value=""></option>
+                    {volist name="districts" id='district'}
+                    <option value="{$district.id}">{$district.name}</option>
+                    {/volist}
+                </select>
+            </div>
+            <div class="layui-form-mid">小区 -</div>
+            <div class="layui-input-inline" style="width: 100px;">
+                <input type="text" name="complex" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid">区-</div>
+            <div class="layui-input-inline" style="width: 100px;">
+                <input type="text" name="building" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid">楼 -</div>
+            <div class="layui-input-inline" style="width: 100px;">
+                <input type="text" name="unit" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid">单元 -</div>
+            <div class="layui-input-inline" style="width: 100px;">
+                <input type="text" name="room" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid">号</div>
+        </div>
+        <div class="layui-inline">
+            <button class="layui-btn layuiadmin-btn-order" lay-submit lay-filter="submit">
+                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+            </button>
+        </div>
     </div>
-    <div class="layui-inline">
-        <select name="type"  id="search-key" >
-            <option value="owner" selected>业主</option>
-            <option value="id">ID</option>
-            <option value="tel">联系方式</option>
-        </select>
-    </div>
-    <div class="layui-inline">
-        <input class="layui-input" name="value" id="search-value" autocomplete="off">
-    </div>
-    <button id="search-btn" class="layui-btn" data-type="reload">搜索</button>
 </div>
 <table class="layui-hide" id="house" lay-filter="house"></table>
 <script type="text/html" id="toolbar">
@@ -38,18 +66,20 @@
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 <script>
-    layui.use(['table','upload','layer'], function(){
+    layui.use(['table','upload','layer','form'], function(){
 
         var table = layui.table;
         var layer = layui.layer;
-        var upload = layui.upload;//主要是这个
+        var upload = layui.upload;
+        var form = layui.form;
 
         table.render({
             elem: '#house',
             url:'{:url("House/index")}',
             limit: '__PAGESIZE__',
-            cellMinWidth: 50, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            cellMinWidth: 50,
             toolbar:'#toolbar',
+            defaultToolbar: [],
             cols: [[
                 // {checkbox: true, fixed: true},
                 {field:'id',sort: true, align: 'center', title: 'ID'},
@@ -62,6 +92,8 @@
                 {field:'room', align: 'center', title: '房间号'},
                 {field:'heating_cost',align: 'center', title: '供暖费/m²'},
                 {field:'property_fee',align: 'center', title: '物业费/m²'},
+                {field:'property_arrears',align: 'center', title: '物业欠费'},
+                {field:'heating_arrears',align: 'center', title: '供暖欠费'},
                 {field:'area',align: 'center', title: '面积/m²'},
                 {field:'check_in_at',align: 'center', title: '入住时间'},
                 {field:'ctime',sort: true,align: 'center', title: '创建时间'},
@@ -102,10 +134,6 @@
                 case 'download':
                     location.href="{:url('downloadExcel')}";
                     break;
-                //自定义头工具栏右侧图标 - 提示
-                case 'LAYTABLE_TIPS':
-                    layer.alert('这是工具栏右侧自定义的一个图标按钮');
-                    break;
             };
         });
 
@@ -113,8 +141,6 @@
         table.on('tool(house)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
-            var tr = obj.tr; //获得当前行 tr 的DOM对象
-
             if(layEvent === 'edit'){ //查看
                 location.href="{:url('form')}?id="+data.id;
             } else if(layEvent === 'del'){ //删除
@@ -128,17 +154,12 @@
                 });
             }
         });
-
-        $('#search-btn').on('click', function(){
+        form.on('submit(submit)',function(data){
             table.reload('house', {
                 page: {
                     curr: 1 //重新从第 1 页开始
                 }
-                ,where: {
-                    keyword: $('#search-value').val(),
-                    key:$('#search-key').val(),
-                    district_id:$("#search-district").val()
-                }
+                ,where: data.field
             }, 'data');
         });
     });

@@ -55,15 +55,12 @@
                         '  </div>'
                         ,yes: function(){
                             $.post("{:url('districtAdd')}",{name:$("#district-modal-value").val()},function(data){
-                                layer.msg(data.msg);
-                                if (data.code==0)
-                                {
-                                    setTimeout(function(){
+                                layer.msg(data.msg,{time:1000},function(){
+                                    if(data.code==0) {
                                         table.reload('district', {page: {curr: 1},where: {}}, 'data');
                                         layer.closeAll();
-                                    },1000)
-                                }
-
+                                    }
+                                });
                             },'json');
                         }
                         ,success: function(layero){

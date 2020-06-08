@@ -583,3 +583,15 @@ if (!function_exists('collection')) {
         }
     }
 }
+
+if (!function_exists('column')) {
+    /**
+     * 输出表格的所有字段
+     * @param string    $table 表格名称
+     * @return array
+     */
+    function column($table)
+    {
+        return array_column(Db::query("SELECT COLUMN_NAME ,column_comment,'' as val FROM INFORMATION_SCHEMA. COLUMNS WHERE table_name = '{$table}' and table_schema = '".config("database.database")."'"),'val',"COLUMN_NAME");
+    }
+}

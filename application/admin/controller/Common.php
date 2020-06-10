@@ -1,7 +1,10 @@
 <?php
 namespace app\admin\controller;
 use think\Controller;
-class Common extends Controller{
+class Common extends Controller
+{
+    const STATUS_SUCCESS=0;
+    const STATUS_FAILE=-1;
 
     # 不需要检查权限的控制器 【都需要小写】
     private $no_power_check = [
@@ -25,8 +28,16 @@ class Common extends Controller{
             $new = $this -> _getAdminMenu( $admin_info );
         }
         ################## 根据管理员的类型 ，获取管理员的权限
+        $menu=[];
+        foreach ($new['menu'] as $v)
+        {
+            if (isset($v["node_id"]))
+            {
+                $menu[$v["node_id"]]=$v;
+            }
 
-        $this -> assign('AllMenu' , $new['menu'] );
+        }
+        $this -> assign('AllMenu' , $menu );
 
         ##### admin_type 等于1 表示是超级管理员，超级管理员不收权限控制
         /*if( $admin_info['admin_type'] != 1 ){
@@ -116,7 +127,7 @@ class Common extends Controller{
 
 
         # 为了防止每次都查询数据库，把后台权限放到session，下一次使用的时候直接从session读取
-        if( !session('?power') ){
+        if( !session('?power')||1){
 
 //            echo 'sql';
 
@@ -128,7 +139,7 @@ class Common extends Controller{
             ];
 
 
-            $menu_obj = $menu_model -> where( $where ) -> select();
+            $menu_obj = $menu_model -> where( $where ) ->order("level asc")-> select();
             $menu = collection( $menu_obj ) -> toArray();
 
             if( !empty( $menu) ){
@@ -200,4 +211,55 @@ class Common extends Controller{
             $this -> fail('非法请求');
         }
     }
+    protected function ajax_success($data=[],$code=self::STATUS_SUCCESS,$msg='操作成功')
+    {
+        $ret = [
+            'code' => $code,
+            'msg' =>$msg,
+            'data' => $data
+        ];
+        exit( json_encode($ret));
+    }
+    protected function ajax_error($msg,$code=self::STATUS_FAILE,$data=[])
+    {
+        $ret = [
+            'code' => $code,
+            'msg' =>$msg,
+            'data' => $data
+        ];
+        exit( json_encode($ret));
+    }
+    protected function layui_success($data,$count,$code=self::STATUS_SUCCESS,$msg='操作成功')
+    {
+        $ret = [
+            'code' => $code,
+            'count'=>$count,
+            'msg' =>$msg,
+            'data' => $data
+        ];
+        exit( json_encode($ret));
+    }
+    protected function debug_data($data)
+    {
+        echo "<pre>";
+        if (is_array($data))
+        {
+            print_r($data);
+        }
+        else
+        {
+            echo $data;
+        }
+        die;
+    }
+    protected function getOperator()
+    {
+        $admin=session('admin');
+        return $admin["admin_id"];
+    }
+    protected function getOrderSn()
+    {
+        return date('Ymd').substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 8);
+    }
+
 }

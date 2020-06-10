@@ -3899,3 +3899,103 @@ CREATE TABLE `system` (
 -- Records of system
 -- ----------------------------
 INSERT INTO `system` VALUES ('1', '20200527\\19ed58d7cfa8def96b3d1dc35eb8b64b.jpg', '银河商务', '©京EFC1231', '业务后台管理系统', '1', '1590566822');
+
+
+-- ----------------------------
+-- Table structure for config
+-- ----------------------------
+DROP TABLE IF EXISTS `config`;
+CREATE TABLE `config` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `wx_appId` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '微信公众号appId',
+  `wx_secret` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '微信公众号secret',
+  `mini_program_appId` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '小程序appId',
+  `mini_program_secret` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '小程序secret',
+  `mchId` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '商户号',
+  `key` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '支付密钥',
+  `certPath` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '证书路径',
+  `keyPath` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '证书密钥路径',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- ----------------------------
+-- Table structure for district
+-- ----------------------------
+DROP TABLE IF EXISTS `district`;
+CREATE TABLE `district` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '小区名称',
+  `ctime` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `utime` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='小区信息';
+
+-- ----------------------------
+-- Table structure for house
+-- ----------------------------
+DROP TABLE IF EXISTS `house`;
+CREATE TABLE `house` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `district_id` int(11) NOT NULL DEFAULT '0' COMMENT '小区ID',
+  `complex` varchar(30) NOT NULL DEFAULT '' COMMENT '区',
+  `building` varchar(30) NOT NULL DEFAULT '' COMMENT '楼',
+  `unit` varchar(30) NOT NULL DEFAULT '' COMMENT '单元',
+  `room` varchar(30) NOT NULL DEFAULT '' COMMENT '房间号',
+  `owner` varchar(30) NOT NULL DEFAULT '' COMMENT '业主',
+  `tel` varchar(11) NOT NULL DEFAULT '' COMMENT '联系方式',
+  `area` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '面积',
+  `heating_cost` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '供暖费/m²',
+  `property_fee` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '物业费/m²',
+  `check_in_at` int(11) NOT NULL DEFAULT '0' COMMENT '入住时间',
+  `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0:未删除;1已删除',
+  `ctime` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `utime` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COMMENT='房屋信息';
+
+-- ----------------------------
+-- Table structure for order
+-- ----------------------------
+DROP TABLE IF EXISTS `order`;
+CREATE TABLE `order` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_sn` varchar(32) NOT NULL DEFAULT '' COMMENT '唯一订单号',
+  `pay_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '支付状态',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '发布状态:0未发布;1已发布',
+  `invoice_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '发票状态',
+  `title` varchar(30) NOT NULL COMMENT '标题',
+  `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '订单类型:0:物业费;1:供暖费',
+  `pay_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '支付方式',
+  `house_id` int(11) NOT NULL DEFAULT '0' COMMENT '房屋ID',
+  `fee` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '缴费金额',
+  `pay_fee` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '实付金额',
+  `compensation` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '赔偿项',
+  `voucher` int(11) NOT NULL DEFAULT '0' COMMENT '凭证号',
+  `start_at` int(11) NOT NULL DEFAULT '0' COMMENT '缴费开始时间',
+  `end_at` int(11) NOT NULL DEFAULT '0' COMMENT '缴费结束时间',
+  `finish_at` int(11) NOT NULL COMMENT '完成时间',
+  `ctime` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `utime` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COMMENT='房屋信息';
+
+-- ----------------------------
+-- Table structure for pay_record
+-- ----------------------------
+DROP TABLE IF EXISTS `pay_record`;
+CREATE TABLE `pay_record` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '支付状态:-1:已退款;0未支付;1已支付;2:已取消;',
+  `payment_sn` varchar(30) NOT NULL DEFAULT '' COMMENT '支付流水号',
+  `order_id` int(11) NOT NULL DEFAULT '0' COMMENT '订单ID',
+  `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '订单类型:0:物业费;1:供暖费',
+  `pay_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '支付方式',
+  `amount` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '支付金额',
+  `openid` varchar(32) NOT NULL DEFAULT '' COMMENT '用户OPENID',
+  `operator_id` int(11) NOT NULL DEFAULT '0' COMMENT '管理员ID:现金支付或者pose支付记录当前管理员ID',
+  `pay_at` int(11) NOT NULL DEFAULT '0' COMMENT '支付时间',
+  `remark` varchar(100) DEFAULT '' COMMENT '备注',
+  `ctime` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `utime` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='房屋信息';
